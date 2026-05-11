@@ -109,30 +109,12 @@
 
         usb-gadget-ethernet = import ./modules/usb-gadget-ethernet.nix;
 
-        raspberry-pi-5 = {
-          base = import ./modules/raspberry-pi-5;
-          display-vc4 = import ./modules/display-vc4.nix;
-          display-rp1 = import ./modules/raspberry-pi-5/display-rp1.nix;
-          bluetooth = import ./modules/bluetooth.nix;
-          page-size-16k = import ./modules/raspberry-pi-5/page-size-16k.nix;
-        };
-
         raspberry-pi-4 = {
           base = import ./modules/raspberry-pi-4.nix;
           display-vc4 = import ./modules/display-vc4.nix;
           bluetooth = import ./modules/bluetooth.nix;
           # work-in-progress, untested
           case-argonone = import ./modules/case-argononev2.nix { inherit argononed; };
-        };
-
-        raspberry-pi-3 = {
-          base = import ./modules/raspberry-pi-3.nix;
-        };
-
-        raspberry-pi-02 = {
-          base = import ./modules/raspberry-pi-02.nix;
-          display-vc4 = import ./modules/display-vc4.nix;
-          bluetooth = import ./modules/bluetooth.nix;
         };
       };
 
@@ -188,14 +170,8 @@
           # see legacyPackages.<system>.linuxAndFirmware for other versions of
           # the bundle
           inherit (pkgs.linuxAndFirmware.default)
-            linux_rpi5
-            linuxPackages_rpi5
             linux_rpi4
             linuxPackages_rpi4
-            linux_rpi3
-            linuxPackages_rpi3
-            linux_rpi02
-            linuxPackages_rpi02
             raspberrypifw
             raspberrypiWirelessFirmware
             ;
@@ -204,14 +180,14 @@
 
           pisugar3-kmod =
             let
-              targetKernel = pkgs.linux_rpi02;
+              targetKernel = pkgs.linux_rpi4;
             in
             (pkgs.linuxPackagesFor targetKernel).callPackage ./pkgs/pisugar-kmod.nix {
               pisugarVersion = "3";
             };
           pisugar2-kmod =
             let
-              targetKernel = pkgs.linux_rpi02;
+              targetKernel = pkgs.linux_rpi4;
             in
             (pkgs.linuxPackagesFor targetKernel).callPackage ./pkgs/pisugar-kmod.nix {
               pisugarVersion = "2";
@@ -297,45 +273,6 @@
         in
         {
 
-          rpi02-installer = mkNixOSRPiInstaller [
-            (
-              {
-                config,
-                pkgs,
-                lib,
-                nixos-raspberrypi,
-                ...
-              }:
-              {
-                imports = with nixos-raspberrypi.nixosModules; [
-                  # Hardware configuration
-                  raspberry-pi-02.base
-                  usb-gadget-ethernet
-                ];
-              }
-            )
-            custom-user-config
-          ];
-
-          rpi3-installer = mkNixOSRPiInstaller [
-            (
-              {
-                config,
-                pkgs,
-                lib,
-                nixos-raspberrypi,
-                ...
-              }:
-              {
-                imports = with nixos-raspberrypi.nixosModules; [
-                  # Hardware configuration
-                  raspberry-pi-3.base
-                ];
-              }
-            )
-            custom-user-config
-          ];
-
           rpi4-installer = mkNixOSRPiInstaller [
             (
               {
@@ -355,26 +292,6 @@
             custom-user-config
           ];
 
-          rpi5-installer = mkNixOSRPiInstaller [
-            (
-              {
-                config,
-                pkgs,
-                lib,
-                nixos-raspberrypi,
-                ...
-              }:
-              {
-                imports = with nixos-raspberrypi.nixosModules; [
-                  # Hardware configuration
-                  raspberry-pi-5.base
-                  raspberry-pi-5.page-size-16k
-                ];
-              }
-            )
-            custom-user-config
-          ];
-
         };
 
       installerImages =
@@ -383,10 +300,7 @@
           mkImage = nixosConfig: nixosConfig.config.system.build.sdImage;
         in
         {
-          rpi02 = mkImage nixos.rpi02-installer;
-          rpi3 = mkImage nixos.rpi3-installer;
           rpi4 = mkImage nixos.rpi4-installer;
-          rpi5 = mkImage nixos.rpi5-installer;
         };
 
     };
