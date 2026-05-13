@@ -1,6 +1,8 @@
-# nixos-raspberrypi
+# nixos-raspberrypi (Raspberry Pi 4 Kubernetes)
 
 Unopinionated Nix flake for infrastructure, vendor packages, kernel, and some optimized third-party packages for [NixOS](https://nixos.org/) running on Raspberry Pi devices.
+
+**Note:** To streamline the repository for running Kubernetes, configurations and parameters for devices other than Raspberry Pi 4 have been removed.
 
 It will let you deploy [NixOS](https://nixos.org/) fully declaratively in one step with tools like [nixos-anywhere](https://github.com/nix-community/nixos-anywhere/) (note: `kexec` is, unfortunately, not supported)
 
@@ -11,9 +13,7 @@ Manages Raspberry Pi firmware partition `/boot/firmware` (the path is configurab
 Partition provisioning is integrated with bootloader activation scripts, happening on NixOS generation switch, enabling to use deployment tools like `nixos-anywhere` without any interactive intervention.
 
 Supported boot methods (configurable with `boot.loader.raspberry-pi.bootloader`):
-- `kernelboot` (legacy), default for RPi5
-- `uboot`, default bootloader for all other boards
-- `kernel`, new generation of `kernelboot`, supporting multiple NixOS generations (see [#60](https://github.com/nvmd/nixos-raspberrypi/issues/60), default for RPi5 sd-image/installer images, _recommended_ for new installations.
+- `uboot`, default bootloader for Raspberry Pi 4
 
 
 ## Provides vendor kernel packages with matched firmware
@@ -67,22 +67,19 @@ All of them take the following additional optional arguments:
 - `trustCaches` – default=true, trust binary caches of `nixos-raspberrypi`
 
 ```nix
-nixosConfigurations.rpi5-demo = nixos-raspberrypi.lib.nixosSystem {
+nixosConfigurations.rpi4-demo = nixos-raspberrypi.lib.nixosSystem {
   specialArgs = inputs;
   modules = [
     {
       # Hardware specific configuration, see section below for a more complete
       # list of modules
       imports = with nixos-raspberrypi.nixosModules; [
-        raspberry-pi-5.base
-        raspberry-pi-5.page-size-16k
-        raspberry-pi-5.display-vc4
-        raspberry-pi-5.bluetooth
+        raspberry-pi-4.base
       ];
     }
 
     ({ config, pkgs, lib, ... }: {
-      networking.hostName = "rpi5-demo";
+      networking.hostName = "rpi4-demo";
 
       system.nixos.tags = let
         cfg = config.boot.loader.raspberry-pi;
@@ -109,10 +106,7 @@ Here is the list of the most important:
 ```nix
 imports = with nixos-raspberrypi.nixosModules; [
   # Base board support modules
-  raspberry-pi-02.base
-  raspberry-pi-3.base
   raspberry-pi-4.base
-  raspberry-pi-5.base
 
   # (Potentially) All boards
   usb-gadget-ethernet # Configures USB Gadget/Ethernet - Ethernet emulation over USB
@@ -120,12 +114,6 @@ imports = with nixos-raspberrypi.nixosModules; [
   # RPi4:
   # import this if you have the display, on rpi4 this is the only display configuration option
   raspberry-pi-4.display-vc4
-
-  # RPi5:
-  raspberry-pi-5.page-size-16k  # Recommended: optimizations and fixes for issues arising from 16k memory page size (only for systems running default rpi5 (bcm2712) kernel)
-  # use one of following for the "PrimaryGPU" configuration:
-  raspberry-pi-5.display-vc4  # "regular" display connected
-  raspberry-pi-5.display-rp1  # for RP1-connected (DPI/composite/MIPI DSI) display
 ];
 ```
 
@@ -181,36 +169,25 @@ imports = with nixos-raspberrypi.nixosModules; [
 
 # Installer configurations
 
-The flake provides installation SD card images for Raspberry Pi Zero2, 3, 4, and 5, based on <https://github.com/nix-community/nixos-images>. They have several advantages over the "standard" ones, making the installation more user-friendly: mDNS enabled, `iwd` for easier wlan configuration, etc.
+The flake provides installation SD card images for Raspberry Pi 4, based on <https://github.com/nix-community/nixos-images>. They have several advantages over the "standard" ones, making the installation more user-friendly: mDNS enabled, `iwd` for easier wlan configuration, etc.
 
 Note: these images are mutable, i.e. they're suitable to be used both as an installation media, and as a ready to use system on the sd-card. The partition table will be expanded to use all the available space during the first boot.
-This can helpful for boards with a single storage device option, like RPi Zero/Zero 2.
 
-> [!TIP]
-> installer images use new generational bootloader for RPi5 by default (see #60),
-> to keep that in your configuration, set `boot.loader.raspberry-pi.bootloader = "kernel"`.
-> This is _recommended_ for new installations.
-
-See `nixosConfigurations.rpi{02,4,5}-installer` in `flake.nix`.
+See `nixosConfigurations.rpi4-installer` in `flake.nix`.
 
 SD image can be built with:
 
 ```
-nix build .#installerImages.rpi02
-nix build .#installerImages.rpi3
 nix build .#installerImages.rpi4
-nix build .#installerImages.rpi5
 ```
 
 Randomly generated connection credentials will be displayed on the screen, once the system is booted.
-
-Network access to Raspberry Pi Zero2 (RPi02) boards is also possible via USB Gadget/Ethernet functionality.
 
 > [!TIP]
 > You can optionally replace `# YOUR SSH PUB KEY HERE #` in `custom-user-config`
 > with your SSH public key to generate the image with your SSH key already baked in
 
-`.#nixosConfigurations.rpi{02,4,5}-installer.config.system.build.toplevel` are included in the binary cache.
+`.#nixosConfigurations.rpi4-installer.config.system.build.toplevel` are included in the binary cache.
 
 # NixOS configuration examples
 
