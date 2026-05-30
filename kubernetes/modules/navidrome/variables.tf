@@ -16,11 +16,6 @@ variable "chart_version" {
   default     = "6.8.3"
 }
 
-variable "kube_config_path" {
-  description = "Path to the kubeconfig file"
-  type        = string
-  default     = "/etc/rancher/k3s/k3s.yaml"
-}
 
 variable "config_size" {
   description = "Storage size for the Navidrome config/data PVC"

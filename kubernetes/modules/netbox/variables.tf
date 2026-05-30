@@ -16,8 +16,3 @@ variable "chart_version" {
   default     = "8.2.14" # Example version, can be adjusted
 }
 
-variable "kube_config_path" {
-  description = "Path to the kubeconfig file"
-  type        = string
-  default     = "/etc/rancher/k3s/k3s.yaml"
-}
