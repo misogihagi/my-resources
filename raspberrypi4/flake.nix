@@ -116,6 +116,8 @@
           # work-in-progress, untested
           case-argonone = import ./modules/case-argononev2.nix { inherit argononed; };
         };
+
+        wifi = import ./modules/wifi.nix;
       };
 
       overlays = {
@@ -244,6 +246,10 @@
               ...
             }:
             {
+
+              imports = [ 
+                nixos-raspberrypi.nixosModules.wifi
+              ];
 
               users.users.nixos.openssh.authorizedKeys.keys = [
                 # YOUR SSH PUB KEY HERE #
