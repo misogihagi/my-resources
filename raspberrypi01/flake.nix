@@ -109,6 +109,8 @@
 
         usb-gadget-ethernet = import ./modules/usb-gadget-ethernet.nix;
 
+        wifi = import ./modules/wifi.nix;
+
         raspberry-pi-5 = {
           base = import ./modules/raspberry-pi-5;
           display-vc4 = import ./modules/display-vc4.nix;
@@ -268,6 +270,9 @@
               ...
             }:
             {
+              imports = [
+                nixos-raspberrypi.nixosModules.wifi
+              ];
 
               users.users.nixos.openssh.authorizedKeys.keys = [
                 # YOUR SSH PUB KEY HERE #
