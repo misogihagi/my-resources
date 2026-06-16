@@ -131,3 +131,24 @@ variable "paperless_ngx_export_size" {
   type        = string
   default     = "1Gi"
 }
+
+# --- grafana ---
+
+variable "grafana_release_name" {
+  description = "Helm release name for Grafana"
+  type        = string
+  default     = "my-grafana"
+}
+
+variable "grafana_namespace" {
+  description = "Kubernetes namespace for Grafana"
+  type        = string
+  default     = "grafana"
+}
+
+variable "grafana_chart_version" {
+  description = "Helm chart version for Grafana"
+  type        = string
+  default     = "10.5.15"
+}
+

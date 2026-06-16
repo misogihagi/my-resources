@@ -60,3 +60,12 @@ module "paperless_ngx" {
   consume_size  = var.paperless_ngx_consume_size
   export_size   = var.paperless_ngx_export_size
 }
+
+module "grafana" {
+  source = "./modules/grafana"
+
+  release_name  = var.grafana_release_name
+  namespace     = var.grafana_namespace
+  chart_version = var.grafana_chart_version
+}
+
