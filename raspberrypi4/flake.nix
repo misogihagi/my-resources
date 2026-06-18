@@ -118,6 +118,7 @@
         };
 
         wifi = import ./modules/wifi.nix;
+        k3s = import ./modules/k3s.nix;
       };
 
       overlays = {
@@ -247,8 +248,9 @@
             }:
             {
 
-              imports = [ 
+              imports = [
                 nixos-raspberrypi.nixosModules.wifi
+                nixos-raspberrypi.nixosModules.k3s
               ];
 
               users.users.nixos.openssh.authorizedKeys.keys = [
