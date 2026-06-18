@@ -254,8 +254,7 @@
               ];
 
               users.users.nixos.openssh.authorizedKeys.keys = [
-                # YOUR SSH PUB KEY HERE #
-
+                (builtins.getEnv "MY_SSH_KEY")
               ];
               users.users.root.openssh.authorizedKeys.keys = [
                 # YOUR SSH PUB KEY HERE #
