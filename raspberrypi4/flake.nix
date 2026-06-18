@@ -253,6 +253,8 @@
                 nixos-raspberrypi.nixosModules.k3s
               ];
 
+              networking.hostName = "rpi4-nixos";
+
               users.users.nixos.openssh.authorizedKeys.keys = [
                 (builtins.getEnv "MY_SSH_KEY")
               ];
