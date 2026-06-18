@@ -152,3 +152,40 @@ variable "grafana_chart_version" {
   default     = "10.5.15"
 }
 
+# --- zincsearch ---
+
+variable "zincsearch_release_name" {
+  description = "Deployment name for ZincSearch"
+  type        = string
+  default     = "my-zincsearch"
+}
+
+variable "zincsearch_namespace" {
+  description = "Kubernetes namespace for ZincSearch"
+  type        = string
+  default     = "zincsearch"
+}
+
+variable "zincsearch_image_tag" {
+  description = "Docker image tag for ZincSearch"
+  type        = string
+  default     = "latest"
+}
+
+variable "zincsearch_admin_user" {
+  description = "Initial admin username for ZincSearch"
+  type        = string
+  default     = "admin"
+}
+
+variable "zincsearch_admin_password" {
+  description = "Initial admin password for ZincSearch"
+  type        = string
+  sensitive   = true
+}
+
+variable "zincsearch_data_size" {
+  description = "Storage size for ZincSearch data PVC"
+  type        = string
+  default     = "10Gi"
+}

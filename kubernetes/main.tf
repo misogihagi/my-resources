@@ -69,3 +69,14 @@ module "grafana" {
   chart_version = var.grafana_chart_version
 }
 
+module "zincsearch" {
+  source = "./modules/zincsearch"
+
+  release_name   = var.zincsearch_release_name
+  namespace      = var.zincsearch_namespace
+  image_tag      = var.zincsearch_image_tag
+  admin_user     = var.zincsearch_admin_user
+  admin_password = var.zincsearch_admin_password
+  data_size      = var.zincsearch_data_size
+}
+
