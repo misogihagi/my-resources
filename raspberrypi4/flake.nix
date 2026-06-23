@@ -255,6 +255,17 @@
 
               networking.hostName = "rpi4-nixos";
 
+              services.avahi = {
+                enable = true;
+                nssmdns4 = true;
+                publish = {
+                  enable = true;
+                  addresses = true;
+                  domain = true;
+                  userServices = true;
+                };
+              };
+
               users.users.nixos.openssh.authorizedKeys.keys = [
                 (builtins.getEnv "MY_SSH_KEY")
               ];
