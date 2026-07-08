@@ -119,6 +119,7 @@
 
         wifi = import ./modules/wifi.nix;
         k3s = import ./modules/k3s.nix;
+        cloudflared = import ./modules/cloudflared.nix;
       };
 
       overlays = {
@@ -251,6 +252,7 @@
               imports = [
                 nixos-raspberrypi.nixosModules.wifi
                 nixos-raspberrypi.nixosModules.k3s
+                nixos-raspberrypi.nixosModules.cloudflared
               ];
 
               networking.hostName = "rpi4-nixos";
